@@ -1,17 +1,14 @@
 package gestionescuela;
 //Clase que guarda datos relativos al alumno: DNI, nombre y modalidad de pago (a plazos || completo)
-public class Alumno extends Persona{
+abstract public class Alumno extends Persona{
     
     //Atributos de clase:
-    private String dni;
-    private String nombre;
     private boolean plazos;
     private static int numAlumnos = 0;
     
     //Constructores:
     public Alumno(String d, String n, boolean p){
-        dni = d;
-        nombre = n;
+        super(d, n);
         plazos = p;
         numAlumnos++;
     }
@@ -27,14 +24,14 @@ public class Alumno extends Persona{
     
     @Override
     public String toString(){
-        String respuesta = nombre + ", DNI: " + dni + ", pago ";
+        String respuesta = super.toString() + ", pago ";
         if(plazos) respuesta += "por plazos";
         else respuesta += "completo";
         return respuesta;
     }
     
     public String volcado(){
-        String respuesta = dni + "-" + nombre + "-";
+        String respuesta = super.volcado() + "-";
         if(plazos) respuesta += "Plazos";
         else respuesta += "Completo";
         return respuesta;

@@ -3,31 +3,20 @@ package gestionescuela;
 //y el número total de profesores que se han definido en la escuela hasta ahora
 public class Profesor extends Persona{
     
-    //Atributos de clase: 
-    private String dni;
-    private String nombre;
+    //Atributos de clase:
     private int numHoras;
     private float sueldoHora;
     private static int numProfesores = 0;
     
     //Constructores:
     public Profesor(String d, String n, float s){
-        dni = d;
-        nombre = n;
+        super(d, n);
         sueldoHora = s;
         numProfesores++;
         numHoras = 0;
     }
     
     //Métodos:
-    public String getDni(){
-        return dni;
-    }
-    
-    public String getNombre(){
-        return nombre;
-    }
-    
     public int getNumHoras(){
         return numHoras;
     }
@@ -56,16 +45,17 @@ public class Profesor extends Persona{
     //en caso afirmativo, avisa con un mensaje
     public boolean sePasaria(Asignatura a){
         boolean pasado = (numHoras + a.getHoras()*((a.getNumEntradas()==0)? 1 : a.getNumEntradas()) > 20)? true : false;
-        if(pasado) System.out.println(nombre + " no podría impartir " + a.getNombre() + " porque superaría su máximo de horas semanales.");
+        if(pasado) System.out.println(super.getNombre() + " no podría impartir " + a.getNombre() + " porque superaría su máximo de horas semanales.");
         return pasado;
     }
     
     @Override
     public String toString(){
-        return nombre + ", DNI: " + dni + ", " + sueldoHora + "€/h, " + numHoras + " horas ya asignadas";
+        return super.toString() + ", " + sueldoHora + "€/h, " + numHoras + " horas ya asignadas";
     }
     
+    @Override
     public String volcado(){
-        return dni + "-" + nombre + "-" + numHoras + "-" + sueldoHora;
+        return super.volcado() + "-" + numHoras + "-" + sueldoHora;
     }
 }
