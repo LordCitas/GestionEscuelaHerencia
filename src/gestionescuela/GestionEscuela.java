@@ -302,10 +302,10 @@ public class GestionEscuela {
                                 //Pedimos el método de pago del alumno
                                 System.out.print("¿Cómo va a pagar el curso?\n\t1- A plazos\n\t2- Completo\nTu respuesta: ");
                                 respuesta = seleccionarOpcionInt(1, 2);
-                                plazos = (respuesta == 1)? true : false;
-
-                                //Una vez lo tenemos todo, creamos y asignamos el alumno al curso elegido
-                                cursos[respuesta2-1].insertaAlumno(new Alumno(dniAlumno, nAlumno, plazos));
+                                
+                                //Llamamos a un constructor u otro dependiendo de la opción que se haya escogido
+                                if(respuesta == 1) cursos[respuesta2-1].insertaAlumno(new AlumnoPPlazos(dniAlumno, nAlumno));
+                                else cursos[respuesta2-1].insertaAlumno(new AlumnoPUnico(dniAlumno, nAlumno));
                                 
                                 //Un mensaje para anunciar el fin del proceso
                                 System.out.println(VERDE + "Se ha asignado al alumno " + ROJO + cursos[respuesta2-1].getAlumnos()[cursos[respuesta2-1].getNumAlumnos()-1] + VERDE + " al curso " + 
@@ -329,9 +329,10 @@ public class GestionEscuela {
                                     
                                     //Ponemos un tipo de pago al azar
                                     plazos = (Math.random() < 0.5)? true : false;
-
-                                    //Una vez lo tenemos todo, creamos y asignamos el alumno al curso elegido
-                                    cursos[respuesta2-1].insertaAlumno(new Alumno(dniAlumno, nAlumno, plazos));
+                                    
+                                    //Llamamos a un constructor u otro dependiendo de la opción que se haya escogido
+                                    if(plazos) cursos[respuesta2-1].insertaAlumno(new AlumnoPPlazos(dniAlumno, nAlumno));
+                                    else cursos[respuesta2-1].insertaAlumno(new AlumnoPUnico(dniAlumno, nAlumno));
                                 }
                                 
                                 //Un mensaje para anunciar el fin del proceso
@@ -745,7 +746,8 @@ public class GestionEscuela {
             for(int i=0; i<alumnos.length && lectura.hasNextLine(); i++){
                 lineas = lectura.nextLine().split("-");
                 plazos = (lineas[2].equals("Plazos"))? true : false;
-                alumnos[i] = new Alumno(lineas[0], lineas[1], plazos);
+                if(plazos) alumnos[i] = new AlumnoPPlazos(lineas[0], lineas[1]);
+                else alumnos[i] = new AlumnoPUnico(lineas[0], lineas[1]);
             }
 
             //Un mensaje para avisar de que se han cargado los datos con éxito.

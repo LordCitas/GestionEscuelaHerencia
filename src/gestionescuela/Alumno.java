@@ -24,16 +24,10 @@ abstract public class Alumno extends Persona{
     
     @Override
     public String toString(){
-        String respuesta = super.toString() + ", pago ";
-        if(plazos) respuesta += "por plazos";
-        else respuesta += "completo";
-        return respuesta;
+        return super.toString() + ", pago ";
     }
     
     public String volcado(){
-        String respuesta = super.volcado() + "-";
-        if(plazos) respuesta += "Plazos";
-        else respuesta += "Completo";
-        return respuesta;
+        return super.volcado() + "-";
     }
 }
