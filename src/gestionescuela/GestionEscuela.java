@@ -17,7 +17,8 @@ public class GestionEscuela {
         final String RESET = "\u001B[0m";
         
         //Definimos las variables que van a ir controlando el flujo del programa
-        int respuesta = 2, respuesta2, longitud, numCursos;
+        int respuesta = 2, respuesta2, longitud, numCursos, prof = -1;
+        boolean jefeDepartamento = true;
         
         //Unos arrays para generar nombres automáticamente cuando no queramos introducirlos a mano
         String[] nombres = {"Daniel", "David", "Martina", "Blanca", "Carlos",
@@ -52,6 +53,7 @@ public class GestionEscuela {
         Scanner scan = new Scanner(System.in);
             
         if(respuesta == 1){
+            //Cargamos los datos del documento 
             numCursos = cargarNumAulas();
             cursos = new Curso[numCursos];
             asignaturas = new Asignatura[numCursos*5];
@@ -60,7 +62,20 @@ public class GestionEscuela {
             cargarProfesores(profesores);
             cargarAlumnos(alumnos);
             cargarAsignaturas(asignaturas, profesores);
-            cargarCursos(cursos, asignaturas, profesores, alumnos);             
+            cargarCursos(cursos, asignaturas, profesores, alumnos);
+            
+            //Si encontramos algún profesor, preguntamos qué usuario está accediendo a la bdd
+            int numProf = Profesor.getNumProf();
+            if(numProf != 0){
+                System.out.print("¿Eres un Jefe de Departamento?\n\t1- Sí\n\t2- No\nTu respuesta: ");
+                jefeDepartamento = (seleccionarOpcionInt(1,2) == 1)? true: false;
+                if(!jefeDepartamento){
+                    System.out.print("¿Qué profesor eres? Identifícate: ");
+                    imprimirLista(profesores, 1);
+                    System.out.print("\nTu respuesta: ");
+                    prof = seleccionarOpcionInt(1, numProf);
+                }
+            }
         } else { //Si la carpeta no existe:
             //Pedimos el número de aulas (cursos) con los que vamos a trabajar (como máximo)
             System.out.print("Introduce el número de aulas con las que cuenta la escuela: ");
@@ -184,48 +199,56 @@ public class GestionEscuela {
                 break;
                 
                 case 4: //Registrar un profesor
-                    //Si ya hemos definido un número de profesores igual a 5 veces el de cursos, no podemos crear otro más
-                    if(Profesor.getNumProf() == profesores.length) System.out.println("No se pueden registrar más profesores.");
-                    else{ //Si todavía nos queda espacio, permitimos registrar al nuevo profesor
-                        //Damos la opción de generar automáticamente al profesor
-                        System.out.print("¿Quieres introducir los datos del profesor manualmente?\n\t1- Sí\n\t2- No\nTu respuesta: ");
-                        respuesta = seleccionarOpcionInt(1, 2);
+                    //Preguntamos si va a ser un profesor auxiliar
+                    System.out.print("¿Quieres introducir un profesor auxiliar?\n\t1- Sí\n\t2-No\nTu respuesta: ");
+                    respuesta2 = seleccionarOpcionInt(1, 2);
+                    
+                    if(respuesta2 == 1){
                         
-                        //Defino variables que voy a usar en ambos casos
-                        String nProfesor, dniProfesor;
-                        float sProfesor;
-                        
-                        if(respuesta == 1){
-                            //Pedimos el nombre del profesor
-                            System.out.print("Nombre y apellidos del profesor: ");
-                            nProfesor = scan.nextLine();
+                    } else {
+                        //Si ya hemos definido un número de profesores igual a 5 veces el de cursos, no podemos crear otro más
+                        if(Profesor.getNumProf() == profesores.length) System.out.println("No se pueden registrar más profesores.");
+                        else{ //Si todavía nos queda espacio, permitimos registrar al nuevo profesor
+                            //Damos la opción de generar automáticamente al profesor
+                            System.out.print("¿Quieres introducir los datos del profesor manualmente?\n\t1- Sí\n\t2- No\nTu respuesta: ");
+                            respuesta = seleccionarOpcionInt(1, 2);
 
-                            //Pedimos el dni del profesor
-                            System.out.print("DNI del profesor: ");
-                            dniProfesor = scan.nextLine();
-                            
-                            //Pedimos el salario del profesor
-                            System.out.print("Sueldo por horas del profesor: ");
-                            sProfesor =  seleccionarOpcionFloat(10, 100);
-                        } else { //Vamos a generar un profesor automáticamente
-                            //Generamos un nombre aleatorio usando los arrays de nombres que hemos definido al principio
-                            nProfesor = nombres[(int)(Math.random()*19)] + " " + apellidos[(int)(Math.random()*19)] + 
-                                               " " + apellidos[(int)(Math.random()*19)];
-                            
-                            //Generamos un DNI aleatorio
-                            dniProfesor = generaDNI();
-                            
-                            //Generamos un sueldo aleatorio asegurándonos de que sea mayor que 10 (le pongo de máximo 40€ por poner algo)
-                            sProfesor = (float)((10 + Math.random()*30));
-                            //Truncamos pa que quede bonito
-                            sProfesor -= sProfesor%0.01;
+                            //Defino variables que voy a usar en ambos casos
+                            String nProfesor, dniProfesor;
+                            float sProfesor;
+
+                            if(respuesta == 1){
+                                //Pedimos el nombre del profesor
+                                System.out.print("Nombre y apellidos del profesor: ");
+                                nProfesor = scan.nextLine();
+
+                                //Pedimos el dni del profesor
+                                System.out.print("DNI del profesor: ");
+                                dniProfesor = scan.nextLine();
+
+                                //Pedimos el salario del profesor
+                                System.out.print("Sueldo por horas del profesor: ");
+                                sProfesor =  seleccionarOpcionFloat(10, 100);
+                            } else { //Vamos a generar un profesor automáticamente
+                                //Generamos un nombre aleatorio usando los arrays de nombres que hemos definido al principio
+                                nProfesor = nombres[(int)(Math.random()*19)] + " " + apellidos[(int)(Math.random()*19)] + 
+                                                   " " + apellidos[(int)(Math.random()*19)];
+
+                                //Generamos un DNI aleatorio
+                                dniProfesor = generaDNI();
+
+                                //Generamos un sueldo aleatorio asegurándonos de que sea mayor que 10 (le pongo de máximo 40€ por poner algo)
+                                sProfesor = (float)((10 + Math.random()*30));
+                                //Truncamos pa que quede bonito
+                                sProfesor -= sProfesor%0.01;
+                            }
+
+                            //Construimos el profesor y lo introducimos en el array
+                            profesores[Profesor.getNumProf()] = new Profesor(dniProfesor, nProfesor, sProfesor);
+
+                            //Un mensaje para anunciar el fin del proceso
+                            System.out.println(VERDE + "Se ha añadido al profesor " + ROJO + profesores[Profesor.getNumProf()-1] + RESET);
                         }
-                        
-                        //Construimos el profesor y lo introducimos en el array
-                        profesores[Profesor.getNumProf()] = new Profesor(dniProfesor, nProfesor, sProfesor);
-                        
-                        //Un mensaje para anunciar el fin del proceso
-                        System.out.println(VERDE + "Se ha añadido al profesor " + ROJO + profesores[Profesor.getNumProf()-1] + RESET);
                     }
                 break;
                 
